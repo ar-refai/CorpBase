@@ -8,4 +8,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CorpBase.Business\CorpBase.Business.csproj" />
+    <ProjectReference Include="..\CorpBase.Common\CorpBase.Common.csproj" />
+  </ItemGroup>
+
 </Project>
