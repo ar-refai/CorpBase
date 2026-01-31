@@ -1,17 +1,34 @@
+using CorpBase.Business;
+using CorpBase.Common.Interfaces;
+using CorpBase.Data.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace CorpBase.WinUI
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+
+            var services = new ServiceCollection();
+
+            // Register dependencies
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<EmployeeService>();
+
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<DepartmentService>();
+
+            // Register Forms
+            services.AddScoped<EmployeesForm>();
+
+            using var provider = services.BuildServiceProvider();
+
+            var mainForm = provider.GetRequiredService<EmployeesForm>();
+
+            Application.Run(mainForm);
         }
     }
 }
