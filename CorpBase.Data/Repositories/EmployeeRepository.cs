@@ -8,7 +8,7 @@ namespace CorpBase.Data.Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        // get all employees in connected mode
+        // get all employees in (connected mode)
         public List<Employee> GetAll()
         {
             var emps = new List<Employee>();
@@ -37,7 +37,7 @@ namespace CorpBase.Data.Repositories
             
         }
         
-        // get all employees in disconnected mode
+        // get all employees in (disconnected mode)
         public DataTable GetAllAsTable(bool isActive)
         {
             using var con = DbConnectionFactory.Create();
@@ -52,12 +52,24 @@ namespace CorpBase.Data.Repositories
 
             var dt = new DataTable();
             using var da = new SqlDataAdapter(cmd);
+            // VERY IMPORTANT
+            da.MissingSchemaAction = MissingSchemaAction.AddWithKey;
             // SqlDataAdapter.Fill will open the connection if it's closed, then close it when done.
             da.Fill(dt);
             return dt;
         }
-   
-        // insert an employee
+
+        // save employee changes (disconnected mode)
+        public void SaveEmployeesTable(DataTable table)
+        {
+            using var con = DbConnectionFactory.Create();
+            using var adapter = new SqlDataAdapter(@"Select * From Employees", con);
+            using var builder = new SqlCommandBuilder(adapter);
+            con.Open();
+            adapter.Update(table);
+        }
+        
+        // insert an employee  (connected mode)
         public void Insert(Employee em)
         {
             using var con = DbConnectionFactory.Create();
@@ -75,7 +87,7 @@ namespace CorpBase.Data.Repositories
             cmd.ExecuteNonQuery();
         }
 
-        // update an employee
+        // update an employee  (connected mode)
         public void Update(Employee em)
         {
             using var con = DbConnectionFactory.Create();
@@ -98,7 +110,7 @@ namespace CorpBase.Data.Repositories
             if (affected == 0) throw new Exception("Update Failed!");
         }
 
-        // delete an employee
+        // delete an employee  (connected mode)
         public void Delete(int Id)
         {
             using var con = DbConnectionFactory.Create();
@@ -110,10 +122,30 @@ namespace CorpBase.Data.Repositories
             if (affected == 0) throw new Exception("Nothing is deleted!");
         }
 
-        // search for an employee
+        // search for an employee (connected mode)
         public List<Employee> Search(string keyword)
         {
-            throw new Exception();
+            using var con = DbConnectionFactory.Create();
+            using var cmd = con.CreateCommand();
+            cmd.CommandText = @"Select Id, FullName, JobTitle, Salary, IsActive, DepartmentId from Employees Where FullName Like @keyword Or JobTitle Like @keyword";
+            cmd.Parameters.AddWithValue("@keyword", keyword);
+            con.Open();
+            using var reader = cmd.ExecuteReader();
+            var employees = new List<Employee>();
+            while (reader.Read())
+            {
+                Employee em = new Employee()
+                {
+                    Id = reader.GetInt32(0),
+                    FullName = reader.GetString(1),
+                    JobTitle = reader.GetString(2),
+                    Salary = reader.GetDecimal(3),
+                    IsActive = reader.GetBoolean(4),
+                    DepartmentId = reader.GetInt32(5),
+                };
+                employees.Add(em);
+            }
+            return employees;
         }
 
     }

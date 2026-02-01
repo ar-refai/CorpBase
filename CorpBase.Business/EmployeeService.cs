@@ -15,11 +15,15 @@ public class EmployeeService
         this._repo = _repo;
     } 
 
-    // get all employeese connected mode
+    // get all employeese (connected mode)
     public List<Employee> GetEmployees(bool isActive) => _repo.GetAll().Where(e => e.IsActive == isActive).ToList();
-    
-    // get all employees disconnected mode
+
+
+    // get all employees (disconnected mode) ready for editting 
     public DataTable GetEmployeesAsTable(bool isActive) => _repo.GetAllAsTable(isActive);
+
+    // save employees table (disconected service)
+    public void SaveEmployeesTable(DataTable table) => _repo.SaveEmployeesTable(table);
 
     // search employees
     public List<Employee> SearchEmployees(string keyword) => _repo.Search(keyword);
@@ -46,6 +50,14 @@ public class EmployeeService
         _repo.Delete(Id);
     }
 
+    // search for a keyword in fullname and jobtitle
+    public List<Employee> Search(string keyword) 
+    {
+        if (string.IsNullOrEmpty(keyword)) return _repo.GetAll();
+        return _repo.Search(keyword); 
+    }
+    
+    // validate the inputs
     private void Validate(Employee em)
     {
         if (string.IsNullOrEmpty(em.FullName))
@@ -54,6 +66,7 @@ public class EmployeeService
             throw new Exception("");
         
     }
+
 
 
 }

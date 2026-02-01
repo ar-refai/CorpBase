@@ -39,6 +39,7 @@
             pnl_border = new Panel();
             pnl_main = new Panel();
             pnl_content = new Panel();
+            nud_id = new NumericUpDown();
             chk_isactive = new CheckBox();
             pnl_departmentid = new Panel();
             cmb_departments = new ComboBox();
@@ -64,7 +65,6 @@
             btn_search = new Button();
             lbl_employees = new Label();
             btn_close = new Button();
-            nud_id = new NumericUpDown();
             lbl_fullname = new Label();
             lbl_jobtitle = new Label();
             lbl_salary = new Label();
@@ -73,6 +73,7 @@
             pnl_border.SuspendLayout();
             pnl_main.SuspendLayout();
             pnl_content.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nud_id).BeginInit();
             pnl_departmentid.SuspendLayout();
             pnl_salary.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nud_salary).BeginInit();
@@ -86,7 +87,6 @@
             pnl_header.SuspendLayout();
             txt_search_wrapper.SuspendLayout();
             pnl_search_wrapper.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)nud_id).BeginInit();
             SuspendLayout();
             // 
             // lbl_fullname
@@ -188,6 +188,15 @@
             pnl_content.Name = "pnl_content";
             pnl_content.Size = new Size(494, 444);
             pnl_content.TabIndex = 3;
+            // 
+            // nud_id
+            // 
+            nud_id.Enabled = false;
+            nud_id.Location = new Point(142, 0);
+            nud_id.Name = "nud_id";
+            nud_id.Size = new Size(120, 23);
+            nud_id.TabIndex = 14;
+            nud_id.Visible = false;
             // 
             // chk_isactive
             // 
@@ -500,6 +509,7 @@
             btn_search.TabIndex = 4;
             btn_search.Text = "Search";
             btn_search.UseVisualStyleBackColor = false;
+            btn_search.Click += btn_search_Click;
             // 
             // lbl_employees
             // 
@@ -526,15 +536,6 @@
             btn_close.UseVisualStyleBackColor = true;
             btn_close.Click += button1_Click;
             // 
-            // nud_id
-            // 
-            nud_id.Enabled = false;
-            nud_id.Location = new Point(142, 0);
-            nud_id.Name = "nud_id";
-            nud_id.Size = new Size(120, 23);
-            nud_id.TabIndex = 14;
-            nud_id.Visible = false;
-            // 
             // EmployeesForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -553,6 +554,7 @@
             pnl_main.ResumeLayout(false);
             pnl_content.ResumeLayout(false);
             pnl_content.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nud_id).EndInit();
             pnl_departmentid.ResumeLayout(false);
             pnl_salary.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)nud_salary).EndInit();
@@ -570,7 +572,6 @@
             txt_search_wrapper.ResumeLayout(false);
             txt_search_wrapper.PerformLayout();
             pnl_search_wrapper.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)nud_id).EndInit();
             ResumeLayout(false);
         }
 

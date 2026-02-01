@@ -33,64 +33,7 @@ namespace CorpBase.WinUI
             _deptService = deptService;
         }
 
-        private void EmployeesForm_Load(object sender, EventArgs e)
-        {
-            #region UiDrawings
-            // form
-            RoundControl(this, 15);
-            // panels
-            RoundControl(pnl_header, 15);
-            RoundControl(pnl_border, 15);
-            RoundControl(pnl_main, 15);
-            // buttons
-            RoundControl(btn_create, 10);
-            RoundControl(pnl_create_wrapper, 10);
-            RoundControl(btn_update, 10);
-            RoundControl(pnl_update_wrapper, 10);
-            RoundControl(btn_delete, 10);
-            RoundControl(pnl_delete_wrapper, 10);
-            RoundControl(btn_search, 10);
-            RoundControl(pnl_search_wrapper, 10);
-            // search text 
-            RoundControl(txt_search, 10);
-            RoundControl(txt_search_wrapper, 10);
-            // inputs
-            RoundControl(pnl_fullname, 10);
-            RoundControl(txt_fullname, 10);
-            RoundControl(pnl_jobtitle, 10);
-            RoundControl(txt_jobtitle, 10);
-            RoundControl(pnl_departmentid, 10);
-            RoundControl(cmb_departments, 10);
-            RoundControl(pnl_salary, 10);
-            RoundControl(nud_salary, 10);
-            RoundControl(chk_isactive, 50);
-            nud_salary.Controls[0].Visible = false;
-
-            #endregion
-            cmb_departments.DataSource = _deptService.GetDepartmentsAsTable();
-            cmb_departments.DisplayMember = "DeptName";
-            cmb_departments.ValueMember = "Id";
-
-            LoadEmployees();
-        }
-
-        private void LoadEmployees()
-        {
-            dgv_employees.DataSource = null;
-            dgv_employees.DataSource = _service.GetEmployeesAsTable(true);
-        }
-
-
-
-
-
-
-
-        // The close button
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
+        #region Drawing Methods
 
         // To be able to drag the header section as there is no controls to drag the form
         private void pnl_header_MouseDown(object sender, MouseEventArgs e)
@@ -147,7 +90,64 @@ namespace CorpBase.WinUI
             path.CloseFigure();
             return path;
         }
+        #endregion
 
+        // load the form
+        private void EmployeesForm_Load(object sender, EventArgs e)
+        {
+            #region UiDrawings
+            // form
+            RoundControl(this, 15);
+            // panels
+            RoundControl(pnl_header, 15);
+            RoundControl(pnl_border, 15);
+            RoundControl(pnl_main, 15);
+            // buttons
+            RoundControl(btn_create, 10);
+            RoundControl(pnl_create_wrapper, 10);
+            RoundControl(btn_update, 10);
+            RoundControl(pnl_update_wrapper, 10);
+            RoundControl(btn_delete, 10);
+            RoundControl(pnl_delete_wrapper, 10);
+            RoundControl(btn_search, 10);
+            RoundControl(pnl_search_wrapper, 10);
+            // search text 
+            RoundControl(txt_search, 10);
+            RoundControl(txt_search_wrapper, 10);
+            // inputs
+            RoundControl(pnl_fullname, 10);
+            RoundControl(txt_fullname, 10);
+            RoundControl(pnl_jobtitle, 10);
+            RoundControl(txt_jobtitle, 10);
+            RoundControl(pnl_departmentid, 10);
+            RoundControl(cmb_departments, 10);
+            RoundControl(pnl_salary, 10);
+            RoundControl(nud_salary, 10);
+            RoundControl(chk_isactive, 50);
+            nud_salary.Controls[0].Visible = false;
+
+            #endregion
+            cmb_departments.DataSource = _deptService.GetDepartmentsAsTable();
+            cmb_departments.DisplayMember = "DeptName";
+            cmb_departments.ValueMember = "Id";
+
+            LoadEmployees();
+        }
+
+        // load employee data
+        private void LoadEmployees()
+        {
+            dgv_employees.DataSource = null;
+            dgv_employees.DataSource = _service.GetEmployeesAsTable(true);
+        }
+        
+        // The exit button
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        // fill the inputs when cell if dgv clicked
         private void dgv_employees_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex == 0) return;
@@ -161,6 +161,7 @@ namespace CorpBase.WinUI
             cmb_departments.SelectedValue = row.Cells["DepartmentId"].Value;
         }
 
+        // crud operations and search 
         private void btn_create_Click(object sender, EventArgs e)
         {
             try
@@ -208,8 +209,8 @@ namespace CorpBase.WinUI
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
-            if(((int)(nud_id.Value)) <= 0) { MessageBox.Show("Select An Employee First"); return; }
-            var confirm = MessageBox.Show("Are you sure ypu want to delete this employee?","Warning",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (((int)(nud_id.Value)) <= 0) { MessageBox.Show("Select An Employee First"); return; }
+            var confirm = MessageBox.Show("Are you sure ypu want to delete this employee?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes)
                 return;
             try
@@ -220,6 +221,19 @@ namespace CorpBase.WinUI
                 MessageBox.Show("Employee deleted.");
             }
             catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btn_search_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                dgv_employees.DataSource = null;
+                dgv_employees.DataSource = _service.Search(txt_search.Text);
+            }
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
