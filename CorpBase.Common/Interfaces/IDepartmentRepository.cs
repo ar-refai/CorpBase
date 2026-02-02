@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace CorpBase.Common.Interfaces
 {
@@ -13,6 +14,8 @@ namespace CorpBase.Common.Interfaces
         DataTable GetDepartmentsAsTable();
 
         void Insert(Department dept);
-        void Update(Department dept); 
+        void Update(Department dept);
+
+        int Insert(Department dept, SqlConnection con, SqlTransaction tx);
     }
 }

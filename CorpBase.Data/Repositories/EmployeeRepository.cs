@@ -148,5 +148,23 @@ namespace CorpBase.Data.Repositories
             return employees;
         }
 
+        // transaction operation
+        public void Insert(Employee em, SqlConnection con, SqlTransaction tx)
+        {
+            using var cmd = con.CreateCommand();
+            cmd.Transaction = tx;
+            cmd.CommandText = @"Insert Into Employees (FullName, JobTitle, Salary, IsActive, DepartmentId) Values (@Id, @FullName, @JobTitle, @Salary, @IsActive, @DepartmnetId); select SCOPE_IDENTITY()";
+            // SCOPE_IDENTITY() is to return the new PK safely
+
+            cmd.Parameters.AddWithValue("@FullName", em.FullName);
+            cmd.Parameters.AddWithValue("@JobTitle",em.JobTitle);
+            cmd.Parameters.AddWithValue("@Salary",em.Salary);
+            cmd.Parameters.AddWithValue("@IsActive",em.IsActive);
+            cmd.Parameters.AddWithValue("@DepartmentId",em.DepartmentId);
+
+            cmd.ExecuteNonQuery();
+        }
+
+
     }
 }

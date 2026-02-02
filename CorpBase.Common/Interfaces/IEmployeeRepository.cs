@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace CorpBase.Common.Interfaces;
 
@@ -13,4 +14,6 @@ public interface IEmployeeRepository
     void Insert(Employee employee);
     void Update(Employee employee);
     void Delete(int Id);
+
+    void Insert(Employee emp, SqlConnection con, SqlTransaction tx);
 }

@@ -97,5 +97,16 @@ namespace CorpBase.Data.Repositories
             cmd.ExecuteNonQuery();
         }
 
+        // transaction operation
+        public int Insert(Department dept, SqlConnection con, SqlTransaction tx) 
+        {
+            using var cmd = con.CreateCommand();
+            cmd.Transaction = tx;
+            cmd.CommandText = @"Insert Into Departments (DeptName, Location) Values (@Name,@Location); Select SCOPE_IDENTITY(); ";
+            // SCOPE_IDENTITY() returns the new PK safley
+            cmd.Parameters.AddWithValue("@Name" , dept.DeptName);
+            cmd.Parameters.AddWithValue("@Location",dept.Location);
+            return Convert.ToInt32(cmd.ExecuteScalar());
+        }
     }
 }
