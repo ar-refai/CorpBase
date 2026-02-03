@@ -11,10 +11,12 @@
   <ItemGroup>
     <ProjectReference Include="..\CorpBase.Business\CorpBase.Business.csproj" />
     <ProjectReference Include="..\CorpBase.Common\CorpBase.Common.csproj" />
+    <ProjectReference Include="..\CorpBase.Data\CorpBase.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

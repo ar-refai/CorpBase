@@ -128,7 +128,7 @@ namespace CorpBase.Data.Repositories
             using var con = DbConnectionFactory.Create();
             using var cmd = con.CreateCommand();
             cmd.CommandText = @"Select Id, FullName, JobTitle, Salary, IsActive, DepartmentId from Employees Where FullName Like @keyword Or JobTitle Like @keyword";
-            cmd.Parameters.AddWithValue("@keyword", keyword);
+            cmd.Parameters.AddWithValue("@keyword", $"%{keyword}%");
             con.Open();
             using var reader = cmd.ExecuteReader();
             var employees = new List<Employee>();
@@ -153,7 +153,7 @@ namespace CorpBase.Data.Repositories
         {
             using var cmd = con.CreateCommand();
             cmd.Transaction = tx;
-            cmd.CommandText = @"Insert Into Employees (FullName, JobTitle, Salary, IsActive, DepartmentId) Values (@Id, @FullName, @JobTitle, @Salary, @IsActive, @DepartmnetId); select SCOPE_IDENTITY()";
+            cmd.CommandText = @"Insert Into Employees (FullName, JobTitle, Salary, IsActive, DepartmentId) Values (@FullName, @JobTitle, @Salary, @IsActive, @DepartmnetId); select SCOPE_IDENTITY()";
             // SCOPE_IDENTITY() is to return the new PK safely
 
             cmd.Parameters.AddWithValue("@FullName", em.FullName);

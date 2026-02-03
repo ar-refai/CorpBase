@@ -1,6 +1,10 @@
+using CorpBase.Data;
 using CorpBase.Business;
 using CorpBase.Common.Interfaces;
 using CorpBase.Data.Repositories;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CorpBase.WinUI
@@ -8,27 +12,38 @@ namespace CorpBase.WinUI
     internal static class Program
     {
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             ApplicationConfiguration.Initialize();
+            var host = Host.CreateDefaultBuilder(args).ConfigureServices((context, services) =>
+            {
+                var connectionString = context.Configuration.GetConnectionString("CorpBaseDb");
+                
+                // Register 
+                services.AddDbContext<CorpBaseDbContext>(options =>
+                    options.UseSqlServer(connectionString));
 
-            var services = new ServiceCollection();
+                services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+                services.AddScoped<IEmployeeEfRepository, EmployeeEfRepository>();
 
-            // Register dependencies
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<EmployeeService>();
+                services.AddScoped<EmployeeService>();
+                services.AddScoped<EmployeeEfService>();
 
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<DepartmentService>();
+                services.AddScoped<IDepartmentEfRepository, DepartmentEfRepository>();
+                services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
-            // Register Forms
-            services.AddScoped<EmployeesForm>();
+                services.AddScoped<DepartmentService>();
+                services.AddScoped<DepartmentEfService>();
 
-            using var provider = services.BuildServiceProvider();
+                //Register Forms
+                services.AddScoped<EmployeesForm>();
 
-            var mainForm = provider.GetRequiredService<EmployeesForm>();
 
-            Application.Run(mainForm);
+            }).Build();
+
+            using var scope = host.Services.CreateScope();
+
+            Application.Run(scope.ServiceProvider.GetRequiredService<EmployeesForm>());
         }
     }
 }

@@ -257,6 +257,7 @@
             nud_salary.Font = new Font("Segoe UI", 19F);
             nud_salary.ForeColor = Color.White;
             nud_salary.Location = new Point(3, 3);
+            nud_salary.Maximum = new decimal(new int[] { int.MaxValue, 0, 0, 0 });
             nud_salary.Name = "nud_salary";
             nud_salary.Size = new Size(140, 37);
             nud_salary.TabIndex = 0;

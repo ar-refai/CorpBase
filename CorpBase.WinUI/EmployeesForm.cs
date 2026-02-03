@@ -127,6 +127,11 @@ namespace CorpBase.WinUI
             nud_salary.Controls[0].Visible = false;
 
             #endregion
+
+            nud_id.Maximum = int.MaxValue; // This sets it to 2.1 Billion
+            // (In case someone gets a big raise!)
+            nud_salary.Maximum = 100000000;
+
             cmb_departments.DataSource = _deptService.GetDepartmentsAsTable();
             cmb_departments.DisplayMember = "DeptName";
             cmb_departments.ValueMember = "Id";
@@ -150,10 +155,13 @@ namespace CorpBase.WinUI
         // fill the inputs when cell if dgv clicked
         private void dgv_employees_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex == 0) return;
+            if (e.RowIndex < 0) return;
 
             var row = dgv_employees.Rows[e.RowIndex];
-            nud_id.Value = (int)row.Cells["Id"].Value;
+
+            if (row.Cells["Id"].Value == DBNull.Value) return;
+
+            nud_id.Value = Convert.ToInt32(row.Cells["Id"].Value);
             txt_fullname.Text = row.Cells["FullName"].Value.ToString();
             txt_jobtitle.Text = row.Cells["JobTitle"].Value.ToString();
             nud_salary.Value = Convert.ToDecimal(row.Cells["Salary"].Value);
@@ -173,7 +181,7 @@ namespace CorpBase.WinUI
                     JobTitle = txt_jobtitle.Text,
                     Salary = nud_salary.Value,
                     IsActive = chk_isactive.Checked,
-                    DepartmentId = (int)cmb_departments.SelectedValue
+                    DepartmentId = Convert.ToInt32(cmb_departments.SelectedValue)
                 };
                 _service.Create(emp);
                 LoadEmployees();
@@ -190,12 +198,12 @@ namespace CorpBase.WinUI
             {
                 var em = new Employee()
                 {
-                    Id = (int)nud_id.Value,
+                    Id = Convert.ToInt32(nud_id.Value),
                     FullName = txt_fullname.Text,
                     JobTitle = txt_jobtitle.Text,
                     Salary = nud_salary.Value,
                     IsActive = chk_isactive.Checked,
-                    DepartmentId = (int)cmb_departments.SelectedValue
+                    DepartmentId = Convert.ToInt32(cmb_departments.SelectedValue)
                 };
                 _service.Update(em);
                 LoadEmployees();
@@ -209,13 +217,13 @@ namespace CorpBase.WinUI
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
-            if (((int)(nud_id.Value)) <= 0) { MessageBox.Show("Select An Employee First"); return; }
+            if ((Convert.ToInt32(nud_id.Value)) <= 0) { MessageBox.Show("Select An Employee First"); return; }
             var confirm = MessageBox.Show("Are you sure ypu want to delete this employee?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirm != DialogResult.Yes)
                 return;
             try
             {
-                int id = (int)nud_id.Value;
+                int id = Convert.ToInt32(nud_id.Value);
                 _service.Delete(id);
                 LoadEmployees();
                 MessageBox.Show("Employee deleted.");
