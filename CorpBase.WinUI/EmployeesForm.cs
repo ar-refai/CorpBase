@@ -15,6 +15,7 @@ namespace CorpBase.WinUI
 {
     public partial class EmployeesForm : Form
     {
+        #region Drawing Properties
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
@@ -23,6 +24,7 @@ namespace CorpBase.WinUI
 
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn(int nLeft, int nTop, int nRight, int nBottom, int nWidthEllipse, int nHeightEllipse);
+        #endregion
 
         private readonly EmployeeService _service;
         private readonly DepartmentService _deptService;
